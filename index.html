@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de PDF a Word y viceversa</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .conversion-box {
+            min-height: 300px;
+            transition: all 0.3s ease;
+        }
+        .conversion-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        #loading {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container py-5">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-600 mb-3">
+                <i class="fas fa-exchange-alt mr-2"></i>Conversor de Documentos
+            </h1>
+            <p class="text-lg text-gray-600">Convierte fácilmente entre PDF y Word</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- PDF to Word -->
+            <div class="col-md-6">
+                <div class="conversion-box bg-white p-5 rounded-lg shadow">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-600">
+                        <i class="fas fa-file-pdf mr-2"></i>PDF a Word
+                    </h2>
+                    <div class="mb-3">
+                        <label for="pdfFile" class="form-label">Selecciona un archivo PDF</label>
+                        <input class="form-control" type="file" id="pdfFile" accept=".pdf">
+                    </div>
+                    <button id="convertToWordBtn" class="btn btn-primary w-100 py-2">
+                        <i class="fas fa-sync-alt mr-2"></i>Convertir a Word
+                    </button>
+                    <div id="pdfToWordStatus" class="mt-3"></div>
+                    <div id="loadingPdfToWord" class="text-center mt-3" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="mt-2">Convirtiendo archivo...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Word to PDF -->
+            <div class="col-md-6">
+                <div class="conversion-box bg-white p-5 rounded-lg shadow">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-600">
+                        <i class="fas fa-file-word mr-2"></i>Word a PDF
+                    </h2>
+                    <div class="mb-3">
+                        <label for="wordFile" class="form-label">Selecciona un archivo Word</label>
+                        <input class="form-control" type="file" id="wordFile" accept=".doc,.docx">
+                    </div>
+                    <button id="convertToPdfBtn" class="btn btn-primary w-100 py-2">
+                        <i class="fas fa-sync-alt mr-2"></i>Convertir a PDF
+                    </button>
+                    <div id="wordToPdfStatus" class="mt-3"></div>
+                    <div id="loadingWordToPdf" class="text-center mt-3" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="mt-2">Convirtiendo archivo...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        document.getElementById('convertToWordBtn').addEventListener('click', convertPdfToWord);
+        document.getElementById('convertToPdfBtn').addEventListener('click', convertWordToPdf);
+
+        function convertPdfToWord() {
+            try {
+                const fileInput = document.getElementById('pdfFile');
+                const statusDiv = document.getElementById('pdfToWordStatus');
+                const loadingDiv = document.getElementById('loadingPdfToWord');
+                
+                if (!fileInput.files.length) {
+                    showAlert(statusDiv, 'Por favor selecciona un archivo PDF', 'danger');
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                if (file.type !== 'application/pdf') {
+                    showAlert(statusDiv, 'El archivo debe ser un PDF', 'danger');
+                    return;
+                }
+
+                loadingDiv.style.display = 'block';
+                statusDiv.innerHTML = '';
+
+                // Simular conversión (en entorno real usar fetch)
+                setTimeout(() => {
+                    loadingDiv.style.display = 'none';
+                    showAlert(statusDiv, 'Funcionalidad simulada. En un servidor con LibreOffice instalado, se realizaría la conversión real.', 'info');
+                    
+                    // Crear enlace de descarga simulado
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = '#';
+                    downloadLink.className = 'btn btn-success mt-2';
+                    downloadLink.innerHTML = '<i class="fas fa-download mr-2"></i>Descargar Word (simulado)';
+                    downloadLink.onclick = (e) => {
+                        e.preventDefault();
+                        showAlert(statusDiv, 'Descarga simulada. En un entorno real se descargaría el archivo convertido.', 'info');
+                    };
+                    statusDiv.appendChild(downloadLink);
+                }, 1000); // Simulate processing delay
+            } catch (error) {
+                const statusDiv = document.getElementById('pdfToWordStatus');
+                const loadingDiv = document.getElementById('loadingPdfToWord');
+                loadingDiv.style.display = 'none';
+                showAlert(statusDiv, 'Error: ' + error.message, 'danger');
+            }
+        }
+
+        function convertWordToPdf() {
+            try {
+                const fileInput = document.getElementById('wordFile');
+                const statusDiv = document.getElementById('wordToPdfStatus');
+                const loadingDiv = document.getElementById('loadingWordToPdf');
+                
+                if (!fileInput.files.length) {
+                    showAlert(statusDiv, 'Por favor selecciona un archivo Word', 'danger');
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const validTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!validTypes.includes(file.type)) {
+                    showAlert(statusDiv, 'El archivo debe ser un documento Word (.doc o .docx)', 'danger');
+                    return;
+                }
+
+                loadingDiv.style.display = 'block';
+                statusDiv.innerHTML = '';
+
+                // Simular conversión (en entorno real usar fetch)
+                setTimeout(() => {
+                    loadingDiv.style.display = 'none';
+                    showAlert(statusDiv, 'Funcionalidad simulada. En un servidor con LibreOffice instalado, se realizaría la conversión real.', 'info');
+                    
+                    // Crear enlace de descarga simulado
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = '#';
+                    downloadLink.className = 'btn btn-success mt-2';
+                    downloadLink.innerHTML = '<i class="fas fa-download mr-2"></i>Descargar PDF (simulado)';
+                    downloadLink.onclick = (e) => {
+                        e.preventDefault();
+                        showAlert(statusDiv, 'Descarga simulada. En un entorno real se descargaría el archivo convertido.', 'info');
+                    };
+                    statusDiv.appendChild(downloadLink);
+                }, 1000); // Simulate processing delay
+            } catch (error) {
+                const statusDiv = document.getElementById('wordToPdfStatus');
+                const loadingDiv = document.getElementById('loadingWordToPdf');
+                loadingDiv.style.display = 'none';
+                showAlert(statusDiv, 'Error: ' + error.message, 'danger');
+            }
+        }
+
+        function showAlert(element, message, type) {
+            element.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
